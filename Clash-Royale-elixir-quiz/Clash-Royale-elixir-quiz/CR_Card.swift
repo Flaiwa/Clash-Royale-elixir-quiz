@@ -15,7 +15,7 @@ struct CR_Card: Identifiable, Hashable {
     let rarity: String?
 
     init?(api: APICard) {
-        // Elixir muss vorhanden sein, sonst für’s Quiz unbrauchbar
+    
         guard let cost = api.elixirCost else { return nil }
         self.id = api.id
         self.name = api.name

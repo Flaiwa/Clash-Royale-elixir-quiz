@@ -14,18 +14,18 @@ struct ElixirButton: View {
     var body: some View {
         Button(action: action) {
             ZStack {
-                Image("elixir 1")   // dein Asset-Name
+                Image("elixir 1")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 80, height: 80) // Größe anpassen
+                    .frame(width: 80, height: 80)
                 
                 Text("\(value)")
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(.white)
-                    .shadow(color: .black, radius: 2, x: 1, y: 1) // für besseren Kontrast
+                    .shadow(color: .black, radius: 2, x: 1, y: 1)
             }
         }
-        .buttonStyle(.plain) // verhindert den Standard-Button-Style
+        .buttonStyle(.plain) 
     }
 }
 

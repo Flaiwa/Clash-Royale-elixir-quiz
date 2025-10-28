@@ -11,7 +11,7 @@ struct QuizView: View {
 
     var body: some View {
         ZStack {
-            // Hintergrund GANZ HINTEN
+            // Background
             LinearGradient(
                 gradient: Gradient(colors: [
                     Color(red: 0.05, green: 0.28, blue: 0.63),
@@ -22,15 +22,16 @@ struct QuizView: View {
             )
             .ignoresSafeArea()
 
-            // Inhalt DARÜBER
+            //Titel + description + Card + Elixir Buttons
             VStack(spacing: 20) {
-                Text("CR Elixir Quiz")
+                Text("Clash Royale Quiz")
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(.white)
 
-                Text("Wie viel Elixier kostet diese Karte?")
+                Text("How much elixir cost this Card")
                     .foregroundColor(.white)
+                    .bold()
 
                 if let card = vm.currentCard {
                     AsyncImage(url: card.imageURL) { image in
@@ -56,6 +57,14 @@ struct QuizView: View {
                         }
                     }
                 }
+                // for the feedback
+                if let fb = vm.feedback {
+                    Text(fb)
+                        .font(.headline)
+                        .foregroundColor(fb.contains("Correct") ? .green : .red)
+                        .shadow(color: .black, radius: 2, x: 1, y: 1)
+                        .padding(.top)
+                }
 
                 Spacer()
 
@@ -70,7 +79,7 @@ struct QuizView: View {
             .padding()
         }
         .onAppear {
-            vm.loadCards()   // 👈 ganz wichtig: Karten laden
+            vm.loadCards()   
         }
     }
 }
