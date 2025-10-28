@@ -2,88 +2,75 @@
 //  QuizView.swift
 //  Clash-Royale-elixir-quiz
 //
-//  Created by Ihub Innopot on 28.10.25.
+//  Created by Flavio Cheung on 28.10.25.
 //
-
 import SwiftUI
 
 struct QuizView: View {
     @StateObject private var vm = QuizViewModel()
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 16) {
-                if vm.isLoading {
-                    ProgressView("Loading cards…")
-                } else if let error = vm.errorMessage {
-                    Text("Error: \(error)").foregroundColor(.red)
-                    Button("Retry") { vm.loadCards() }
-                        .buttonStyle(.borderedProminent)
-                } else if let card = vm.currentCard {
-                    Text("Wie viel Elixier kostet diese Karte?")
-                        .font(.headline)
+        ZStack {
+            // Hintergrund GANZ HINTEN
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.05, green: 0.28, blue: 0.63),
+                    Color.purple
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-                    // Bild von der API laden
-                    if let url = card.imageURL {
-                        AsyncImage(url: url) { image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: 180, maxHeight: 220)
-                                .shadow(radius: 8)
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 180, height: 220)
-                        }
-                    } else {
-                        Rectangle()
-                            .fill(.gray.opacity(0.2))
-                            .frame(width: 180, height: 220)
-                            .overlay(Text(card.name).font(.caption))
+            // Inhalt DARÜBER
+            VStack(spacing: 20) {
+                Text("CR Elixir Quiz")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.white)
+
+                Text("Wie viel Elixier kostet diese Karte?")
+                    .foregroundColor(.white)
+
+                if let card = vm.currentCard {
+                    AsyncImage(url: card.imageURL) { image in
+                        image.resizable()
+                            .scaledToFit()
+                            .frame(width: 200, height: 260)
+                            .shadow(radius: 8)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(width: 200, height: 260)
                     }
 
                     Text(card.name)
-                        .font(.title3).bold()
+                        .font(.title3)
+                        .foregroundColor(.white)
 
-                    VStack(spacing: 10) {
+                    // Elixier-Bubbles
+                    VStack(spacing: 30) {
                         ForEach(vm.options, id: \.self) { option in
-                            Button {
+                            ElixirButton(value: option) {
                                 vm.checkAnswer(option)
-                            } label: {
-                                Text("\(option) Elixir")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue.opacity(0.9))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(12)
                             }
                         }
                     }
+                }
 
-                    if let fb = vm.feedback {
-                        Text(fb)
-                            .font(.subheadline)
-                            .foregroundColor(fb.contains("Richtig") ? .green : .red)
-                            .padding(.top, 4)
-                    }
+                Spacer()
 
+                HStack {
+                    Text("Score: \(vm.score)")
+                        .foregroundColor(.white)
                     Spacer()
-
-                    HStack {
-                        Text("Score: \(vm.score)")
-                        Spacer()
-                        Button("Reset") { vm.resetScore() }
-                    }
-                    .font(.callout)
-                    .padding(.horizontal)
-                } else {
-                    Text("Keine Karte geladen.")
-                    Button("Neu laden") { vm.loadCards() }
+                    Button("Reset") { vm.resetScore() }
+                        .foregroundColor(.white)
                 }
             }
             .padding()
-            .navigationTitle("CR Elixir Quiz")
-            .onAppear { vm.loadCards() }
+        }
+        .onAppear {
+            vm.loadCards()   // 👈 ganz wichtig: Karten laden
         }
     }
 }

@@ -2,7 +2,7 @@
 //  Clash_Royale_elixir_quizTests.swift
 //  Clash-Royale-elixir-quizTests
 //
-//  Created by Ihub Innopot on 27.10.25.
+//  Created by Flavio Cheung on 27.10.25.
 //
 
 import Testing
